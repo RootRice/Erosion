@@ -5,5 +5,5 @@ using UnityEngine;
 public interface EventAction 
 {
     public void TriggerAction();
-    public void Reset();
+    public void ResetAction();
 }

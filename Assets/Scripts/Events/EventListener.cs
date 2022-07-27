@@ -35,7 +35,7 @@ public abstract class EventListener : MonoBehaviour
     {
         foreach (EventAction action in actions)
         {
-            action.Reset();
+            action.ResetAction();
         }
     }
 }
