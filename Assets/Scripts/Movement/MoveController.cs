@@ -23,6 +23,9 @@ public class MoveController : MonoBehaviour
     private Vector3 _moveForce;
     public Vector3 LastInput;
 
+    private float _minWallAngle;
+    private float _maxWallDotProduct;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -63,7 +66,10 @@ public class MoveController : MonoBehaviour
 
     }
 
-    
+    private void OnValidate()
+    {
+        _maxWallDotProduct = Mathf.Cos(_minWallAngle * Mathf.Deg2Rad);
+    }
 
     private Vector3 ProjectOnContactPlane(Vector3 vector)
     {
