@@ -48,16 +48,18 @@ public class MoveController : MonoBehaviour
     private void UpdateState()
     {
         _grounded = _input.Grounded;
+        // Adds a counter force to the horizontal velocity equal to _drag% of the velocity
         Forces["Drag"] = new Vector3(-(_rb.velocity.x * (1 - (100 - _drag) / 100)), Forces["Drag"].y, -(_rb.velocity.z * (1 - (100 - _drag) / 100)));
         Forces["Gravity"] = _grounded ? Vector3.zero : new Vector3(0, -(Gravity * Time.deltaTime), 0);
         Forces["Move"] = _moveForce * _input.InputMultiplier;
-        Vector3 adjustedForce = Vector3.ProjectOnPlane(Forces.TotalForce, _input.ContactNormal) + Forces["Jump"] + Forces["Dodge"] + Forces["Gravity"] + Forces["Hang"];
+
+        // Projects totalForce x and z to the normal the player is on, while keeping the y the same
+        Vector3 adjustedForce = Vector3.ProjectOnPlane(new Vector3(Forces.TotalForce.x, 0, Forces.TotalForce.z), _input.ContactNormal) + new Vector3(0, Forces.TotalForce.y, 0);
 
         _rb.velocity += adjustedForce;
         Look(LastInput);
 
         vel = _rb.velocity;
-
     }
 
     public void Move(Vector2 input)
