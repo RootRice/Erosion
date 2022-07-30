@@ -48,10 +48,11 @@ public class DodgeController : MonoBehaviour, IMovePart
         var horizontalTime = _horizontalCurve.keys[_horizontalCurve.length - 1].time;
         var verticalTime = _horizontalCurve.keys[_horizontalCurve.length - 1].time;
         _maxTime = Mathf.Max(horizontalTime, verticalTime);
+        var dodgeDirection = _movement.LastInput;
         for (float timer = 0; timer < _maxTime; timer += Time.deltaTime)
         {
             _input.InputMultiplier = _inputCurve.Evaluate(timer / _inputCurve.keys[_inputCurve.length - 1].time);
-            Vector3 dodgeVelocity = _movement.LastInput * _horizontalCurve.Evaluate(timer);
+            Vector3 dodgeVelocity = dodgeDirection * _horizontalCurve.Evaluate(timer);
             dodgeVelocity = new Vector3(dodgeVelocity.x, _verticalCurve.Evaluate(timer), dodgeVelocity.z);
             _forces["Dodge"] = dodgeVelocity;
             yield return new WaitForFixedUpdate();

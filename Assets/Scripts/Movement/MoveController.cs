@@ -53,7 +53,7 @@ public class MoveController : MonoBehaviour
         Forces["Move"] = _moveForce * _input.InputMultiplier;
         // var adjustedForce = AdjustVelocityToSlope(Forces.TotalForce);
         // _rb.velocity += adjustedForce;
-        Vector3 adjustedForce = Vector3.ProjectOnPlane(Forces.TotalForce, _input.ContactNormal) + Forces["Jump"] + Forces["Dodge"] + Forces["Gravity"];
+        Vector3 adjustedForce = Vector3.ProjectOnPlane(Forces.TotalForce, _input.ContactNormal) + Forces["Jump"] + Forces["Dodge"] + Forces["Gravity"] + Forces["Hang"];
 
         _rb.velocity += adjustedForce;
         Look(LastInput);
