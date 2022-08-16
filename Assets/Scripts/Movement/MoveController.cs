@@ -50,7 +50,7 @@ public class MoveController : MonoBehaviour
         _grounded = _input.Grounded;
         // Adds a counter force to the horizontal velocity equal to _drag% of the velocity
         Forces["Drag"] = new Vector3(-(_rb.velocity.x * (1 - (100 - _drag) / 100)), Forces["Drag"].y, -(_rb.velocity.z * (1 - (100 - _drag) / 100)));
-        Forces["Gravity"] = _grounded ? Vector3.zero : new Vector3(0, -(Gravity * Time.deltaTime), 0);
+        Forces["Gravity"] = (_grounded || Forces.ContainsKey("Jump") || Forces.ContainsKey("Dodge")) ? Vector3.zero : new Vector3(0, -(Gravity * Time.deltaTime), 0);
         Forces["Move"] = _moveForce * _input.InputMultiplier;
 
         // Projects totalForce x and z to the normal the player is on, while keeping the y the same

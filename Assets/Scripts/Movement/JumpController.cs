@@ -18,13 +18,16 @@ public class JumpController : MonoBehaviour, IMovePart
     private bool _held = true;
     public float _timeHeld;
 
-    [SerializeField]  private AnimationCurve _curve;
+    [SerializeField]  private AnimationCurve _ascentCurve;
+
 
 
     [SerializeField]  private float _hangTime = 1.0f;
     private float _hangDuration;
     private bool _hanging = false;
     [SerializeField] private float _hangDescentRate;
+
+    [SerializeField] private AnimationCurve _descentCurve;
 
     // Start is called before the first frame update
     void Start()
@@ -42,7 +45,7 @@ public class JumpController : MonoBehaviour, IMovePart
 
     public IEnumerator Run()
     {
-        _maxTime = _curve.keys[_curve.length - 1].time;
+        _maxTime = _ascentCurve.keys[_ascentCurve.length - 1].time;
         _hangDuration = 0;
         _hanging = false;
         // _rb.velocity = new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
@@ -52,6 +55,8 @@ public class JumpController : MonoBehaviour, IMovePart
         }
         yield return StartCoroutine(Ascend());
         yield return StartCoroutine(Hang());
+        _maxTime = _descentCurve.keys[_descentCurve.length - 1].time;
+        yield return StartCoroutine(Descend());
     }
 
     IEnumerator Ascend()
@@ -62,7 +67,7 @@ public class JumpController : MonoBehaviour, IMovePart
             {
                 maxTimer = timer < _minHeldTime ? _minHeldTime : timer + 0.15f;
             }
-            _forces["Jump"] = new Vector3(0, _curve.Evaluate(timer) * _multiplier, 0);
+            _forces["Jump"] = new Vector3(0, _ascentCurve.Evaluate(timer) * _multiplier, 0);
             yield return new WaitForFixedUpdate();
         }
         _forces.Remove("Jump");
@@ -101,6 +106,20 @@ public class JumpController : MonoBehaviour, IMovePart
         }
     }
 
+    IEnumerator Descend()
+    {
+        var maxTimer = _maxTime;
+        for (float timer = 0; timer < maxTimer; timer += Time.deltaTime)
+        {
+            if (_input.Grounded)
+            {
+                break;
+            }
+            _forces["Jump"] = new Vector3(0, _descentCurve.Evaluate(timer), 0);
+            yield return new WaitForFixedUpdate();
+        }
+        _forces.Remove("Jump");
+    }
 
 
     public void Stop()
